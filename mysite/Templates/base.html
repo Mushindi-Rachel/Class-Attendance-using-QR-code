@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-school{% endblock %}</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <!-- Common header -->
+    <header>
+        <div class="header">
+            <img src="{% static 'images/logoE.png' %}" alt="Logo">
+        </div>
+
+        <div class="logout_btn">
+            <button><a href=""></a>Logout<img src="{% static 'images/btn-login-hover.png' %}"></button>
+        </div>
+        
+        <!-- Add navigation menu -->
+        <nav class="sidenav">
+            <table>
+              <tr><td><a href="{% url 'home' %}">Dashboard</a></td></tr> 
+              <tr><td><a href="{% url 'register_course' %}">Register Units</a></td></tr>
+              <tr><td><a href="{% url 'attendance' %}">Attendance</a></td></tr>
+            </table>
+        </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Common footer -->
+    <footer>
+        <div class="footer">
+        <p>&copy; 2024 E-school</p>
+    </div>
+    </footer>
+</body>
+</html>

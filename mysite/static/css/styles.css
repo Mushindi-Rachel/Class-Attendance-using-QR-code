@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css?family=Trirong&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Quicksand&display=swap');
+body {
+    background-image: url('../images/bg1.avif');
+    background-color: aliceblue;
+}
+
+.header {
+    width: 100%;
+    background-color: white;
+    height: 11vh;
+    padding: 0;
+    margin: 0;
+}
+
+.header img {
+    width: 100px;
+    padding: 12px;
+}
+
+.logout_btn {
+    margin: 20px 30px 0 20px;
+}
+
+.logout_btn button {
+    float: right;
+    margin-top: -50px;
+    font-weight: bold;
+    background-color: rgb(33, 202, 174);
+    border: 0;
+    border-radius: 5px 5px 5px 5px;
+}
+
+.sidenav {
+    margin-top: -2vh;
+    width: 210px;
+    height: 82vh;
+    float: left;
+    background-color: #2A2D33;
+}
+
+.sidenav td {
+    margin: auto;
+    text-align: center;
+    border-spacing: 20px;
+    padding: 20px;
+}
+
+.sidenav a {
+    text-decoration: none;
+    font-size: 25px;
+    color: aliceblue;
+}
+
+footer {
+    position: fixed;
+    display: block;
+    background-color: rgb(47, 70, 66);
+    color: aliceblue;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+
+.login_form {
+    background-color: rgb(186, 228, 219);
+    width: 60vh;
+    border-radius: 50px 50px 50px 50px;
+    margin-left: 25%;
+    height: 50vh;
+    margin-top: 20vh;
+}
+
+.login_form img {
+    margin: 5vh 2vh 5vh 15vh;
+    border-radius: 20px 20px 20px 20px;
+}
+
+#login_form {
+    font-size: 15px;
+    margin-left: 10vh;
+}
+
+.login_form button {
+    background-color: rgb(9, 204, 171);
+    padding: 5px;
+    border: 0;
+    font-size: 15px;
+    border-radius: 5px 5px 5px 5px;
+    margin: 20px 0 20px 10vh;
+    width: 10vh;
+    font-weight: bold;
+}
+
+
+/*Register someone*/
+
+.reg_btn button {
+    background-color: rgb(9, 204, 171);
+    padding: 5px;
+    border: 0;
+    font-size: 15px;
+    border-radius: 5px 5px 5px 5px;
+    width: 10vh;
+    font-weight: bold;
+}

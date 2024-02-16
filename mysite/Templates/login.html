@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-school{% endblock %}</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+{% block content %}
+<div class="login_form" style="margin-top:20px;">
+        <div class="">
+            <img src="{% static 'images/logoE.png' %}" alt="Logo">
+        </div>
+
+        <div id="login_form">
+            <form method="POST">
+                {% csrf_token %}
+                {{form.as_p}}
+            
+                    <button class="logout_btn" type="submit">Login</button>
+                </form>
+                Don't have an account? <a href="/register"> <br><strong>Register Here</strong></a>!
+        </div>
+</div>
+{% endblock %}
+
+<footer>
+    <div class="footer">
+    <p>&copy; 2024 E-school</p>
+</div>
+</footer>
+</body>
+</html>
+

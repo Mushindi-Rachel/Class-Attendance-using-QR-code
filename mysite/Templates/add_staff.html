@@ -1,0 +1,17 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+<div class="student_form" style="margin-top:20px;">
+    
+    <div id="reg_form">
+            <h2>Register a Staff</h2>
+            <form method="POST">
+                {% csrf_token %}
+                {{form.as_p}}        
+            <div class="reg_btn" >
+                    <button type="submit">Register</button>
+                </div>
+                </form>
+        </div>
+</div>
+{% endblock %}
