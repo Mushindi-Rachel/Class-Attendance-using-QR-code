@@ -24,7 +24,7 @@ class RegisterForm(forms.Form):
 
     # class Meta:
     #     model = Lecturer
-    #     fields = ['name', 'email', 'phone_no', 'city', ' gender', 'course', 'password']
+    #     fields = ['name', 'email', 'phone_no', 'city', ' gender', 'course', 'pass']
 
 
 class RegisterStudentForm(forms.Form):
@@ -37,3 +37,8 @@ class RegisterStudentForm(forms.Form):
     # class Meta:
     #     model = Lecturer
     #     fields = ['username', 'email', 'phone_no', 'city', 'password']
+
+
+class QRForm(forms.Form):
+    date = forms.DateField(label='Date (YYYY-MM-DD)')
+    unit_code = forms.CharField(label='Unit Code')

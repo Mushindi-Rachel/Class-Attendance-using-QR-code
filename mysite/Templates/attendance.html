@@ -2,6 +2,30 @@
 
 {% block content %}
 
+    <h1>Scan QR Code</h1>
+    <video id="scanner"></video>
+    <script>
+        // Initialize Instascan scanner
+        let scanner = new Instascan.Scanner({ video: document.getElementById('scanner') });
+        
+        // Add listener for QR code scan
+        scanner.addListener('scan', function(content) {
+            // Redirect to a Django view with the scanned QR code data
+            window.location.href = '/process_qr_code?data=' + encodeURIComponent(content);
+        });
+        
+        // Start scanning
+        Instascan.Camera.getCameras().then(function(cameras) {
+            if (cameras.length > 0) {
+                scanner.start(cameras[0]);
+            } else {
+                console.error('No cameras found.');
+            }
+        }).catch(function(e) {
+            console.error(e);
+        });
+    </script>
+
 
 {%endblock%}
 
