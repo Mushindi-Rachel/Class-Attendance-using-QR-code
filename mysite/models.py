@@ -1,63 +1,112 @@
-# from django.contrib.auth.models import AbstractUser
-# from django.db import models
-# from django.utils.translation import gettext_lazy as _
+from django.conf import settings
+from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
-# class User(AbstractUser):
-#     USER_TYPE_CHOICES = [
-#         ('student', 'Student'),
-#         ('lecturer', 'Lecturer'),
-#         ('admin', 'Admin'),
-#     ]
-#     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES)
-
-#     class Meta:
-#         permissions = [('view_user', 'Can view user')]
-#         user_permissions = models.ManyToManyField(
-#         'auth.Permission',
-#         verbose_name='user permissions',
-#         blank=True,
-#         related_name='%(app_label)s_%(class)s_permissions',
-#         related_query_name='%(app_label)s_%(class)s'
-#     )
+class User(AbstractUser):
+    ADMIN = 'ADMIN'
+    LECTURER = 'LECTURER'
+    STUDENT = 'STUDENT'
+    
+    ROLE_CHOICES = [
+        (ADMIN, 'Admin'),
+        (LECTURER, 'Lecturer'),
+        (STUDENT, 'Student'),
+    ]
+    
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=STUDENT)
+    email = models.EmailField(unique=True, max_length=50)
+    username = models.CharField(unique=True, max_length=20)
 
 
-# class Student(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     name = models.CharField(max_length=255)
-#     registration_no = models.CharField(max_length=50)
-#     phone_number = models.BigIntegerField()
-#     city = models.CharField(max_length=50)
-#     GENDER_CHOICES = [
-#         ('M', 'Male'),
-#         ('F', 'Female'),
-#     ]
-#     gender = models.CharField(max_length=128, choices=GENDER_CHOICES)
-#     course = models.CharField(max_length=50)
-
-#     def __str__(self):
-#         return self.user.name + "'s Profile"
+class CustomAdmin(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    department = models.ForeignKey('Department', on_delete=models.CASCADE)
+    staff_id = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    email = models.EmailField(unique=True)
+    
+    def __str__(self):
+        return f"{self.staff_id} - {self.name} - {self.email}"
 
 
-# class Course(models.Model):
-#     name = models.CharField(max_length=255)
+class Department(models.Model):
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=20, unique=True)
 
-#     def __str__(self):
-#         return str(self.name)
-
-
-# class Units(models.Model):
-#     name = models.CharField(max_length=255)
-#     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-
-#     def __str__(self):
-#         return str(self.name)
+    def __str__(self):
+        return self.name
 
 
-# # class Lecturer(models.Model):
-# #     user = models.OneToOneField(User, on_delete=models.CASCADE)
-# #     name = models.CharField(max_length=255)
-# #     unit = models.ForeignKey(Units, on_delete=models.CASCADE)
+class LecturerProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+    staff_id = models.CharField(max_length=30, unique=True)
+    email = models.EmailField(unique=True)
 
-# #     def __str__(self):
-# #         return self.user.name
+    def get_absolute_url(self):
+        return "/lecturer/profile/%i/" % self.staff_id
+
+    def __str__(self):
+        return f"{self.staff_id} - {self.name} - {self.email}"
+
+
+class StudentProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    reg_no = models.CharField(max_length=30)
+    name = models.CharField(max_length=50)
+    email = models.EmailField(unique=True)
+    contact = models.IntegerField()
+    date_of_birth = models.DateField()
+    GENDER_CHOICES = [('M', 'Male'), ('F', 'Female')]
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    program = models.CharField(max_length=100)
+
+    def get_absolute_url(self):
+        return "/student/profile/%i/" % self.reg_no
+
+    def __str__(self):
+        return f"{self.reg_no}-{self.program}"
+
+
+class Program(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Year(models.Model):
+    year = models.FloatField()
+
+    def __str__(self):
+        return str(self.year)
+
+
+class Unit(models.Model):
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=10, default='INTE000')
+    program = models.ForeignKey(Program, on_delete=models.CASCADE)
+    year = models.ForeignKey(Year, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class UserUnit(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    registered_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.unit.name}"
+
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    added_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.unit.name} - Cart"

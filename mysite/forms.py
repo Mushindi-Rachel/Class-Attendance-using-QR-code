@@ -1,5 +1,6 @@
 from django import forms
-# from .models import Lecturer
+from .models import StudentProfile
+from .models import LecturerProfile, User, Unit, Year
 
 
 class LoginForm(forms.Form):
@@ -7,38 +8,52 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
 
 
-G_Choices = [
-        ('M', 'Male'),
-        ('F', 'Female'),
-    ]
+class AdminRegistrationForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
 
 
-class RegisterForm(forms.Form):
-    name = forms.CharField(max_length=50, required=True)
-    email = forms.EmailField(max_length=50, required=True)
-    phone_no = forms.CharField(max_length=10, required=True)
-    city = forms.CharField(max_length=50, required=True)
-    gender = forms.ChoiceField(widget=forms.RadioSelect, choices=G_Choices)
-    course = forms.CharField(max_length=50)
-    password = forms.CharField(max_length=8, required=True)
+class UserRegistrationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
 
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password', 'role']
+        
+        
+class LecturerRegistrationForm(forms.ModelForm):
+    username = forms.CharField(max_length=20)
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = LecturerProfile
+        fields = ['name', 'email', 'department', 'staff_id', 'username', 'password']
+
+
+class StudentRegistrationForm(forms.ModelForm):
+    username = forms.CharField(max_length=20)
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = StudentProfile
+        fields = ['reg_no', 'name', 'email', 'contact', 'date_of_birth', 'gender', 'program', 'username', 'password']
+
+
+class YearSelectionForm(forms.Form):
+    class meta:
+        model = Year
+        fields = ['Year']
+                  
+    
+class UnitRegistrationForm(forms.ModelForm):
+    name  = "Unit Registration Form"
+    
     # class Meta:
-    #     model = Lecturer
-    #     fields = ['name', 'email', 'phone_no', 'city', ' gender', 'course', 'pass']
-
-
-class RegisterStudentForm(forms.Form):
-    username = forms.CharField(max_length=50, required=True)
-    email = forms.EmailField(max_length=50, required=True)
-    phone_no = forms.CharField(max_length=10, required=True)
-    city = forms.CharField(max_length=50, required=True)
-    password = forms.CharField(max_length=8, required=True)
-
-    # class Meta:
-    #     model = Lecturer
-    #     fields = ['username', 'email', 'phone_no', 'city', 'password']
+    #     model = Unit
+    #     fields = ['name', 'code']
 
 
 class QRForm(forms.Form):
-    date = forms.DateField(label='Date (YYYY-MM-DD)')
+    lecture_date = forms.DateField(label='Date (YYYY-MM-DD)')
     unit_code = forms.CharField(label='Unit Code')

@@ -1,6 +1,61 @@
-{% extends "base.html" %}
+{% extends "student_dashboard.html" %}
 
 {% block content %}
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose Year</title>
+</head>
+<body>
+    <h2>Choose Academic Year</h2>
+    {% if years %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="year">Choose Year:</label>
+        <select name="year" id="year">
+            <option Selected disabled="true">--Year--</option>
+            {% for year in years %}
+                <option value="{{ year.year }}">{{ year.year }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+    {% else %}
+    <p>No years found.</p>
+{% endif %}
+    
+
+    {% if units %}
+    <h2>Units for Selected Year</h2>
+    <ul>
+        {% for unit in units %}
+            <li>{{ unit.name }} {{ unit.name }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</body>
+</html>
+
 {%endblock%}
 
+{% comment %} <!DOCTYPE html>
+
+    <h2>Register Units</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register Unit</button>
+    </form>
+
+    <h2>Units in Progress:</h2>
+    <ul>
+        {% for unit in  UserUnit%}
+            <li>{{ unit.name }} - {{ unit.code }}</li>
+        {% endfor %}
+    </ul>
+
+{%endblock%}
+ {% endcomment %}

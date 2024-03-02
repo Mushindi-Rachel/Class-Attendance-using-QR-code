@@ -1,0 +1,28 @@
+{% extends "student_dashboard.html" %}
+
+{% block content %}
+<h2>Registered units:</h2>
+
+<form method ="post" action="get units">
+    {% csrf_token %}
+    <label for="program">Program:</label>
+    <select name="program" id="program">
+        {% for program in programs %}
+            <option value="{{ program.id }}">{{ program.name }}</option>
+        {% endfor %}
+    </select><br>
+    <label for="year">Year:</label>
+    <select name="year" id="year">
+        {% for year in years %}
+            <option value="{{ year.id }}">{{ year.year }}</option>
+        {% endfor %}
+    </select><br>
+    <button type="submit">Get Units</button>
+</form>
+
+    <button type="submit" value="Get All Units">Get All Units</button>
+    </form> 
+    
+
+
+{%endblock%}

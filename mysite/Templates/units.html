@@ -1,0 +1,26 @@
+{% extends "student_dashboard.html" %}
+
+{% block content %}
+
+{% if units %}
+    <h2>Available Units:</h2>
+    <form method="post" action="{% url 'register_units' %}">
+        {% csrf_token %}
+        <ul>
+            {% for unit in units %}
+                <li>
+                    {{ unit.name }}
+                    <button type="submit" name="add_unit" value="{{ unit.id }}">Remove Unit</button>
+                    <button type="submit" name="add_unit" value="{{ unit.id }}">Add Unit</button>
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="submit">Register</button>
+        
+    </form>
+{% else %}
+    <p>No units available for the selected program and year.</p>
+{% endif %}
+
+
+{%endblock%}
