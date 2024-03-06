@@ -1,9 +1,9 @@
-{% extends "base_staff.html" %}
+{% extends "lecturer_dashboard.html" %}
 
 {% block content %}
 <div>
     <h2>Generate QR Code</h2>
-    <form method="post">
+    <form method="post" action="{%url 'generate_qr_code'%}">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Generate QR Code</button>

@@ -1,9 +1,9 @@
 {%if user.role == 'ADMIN'%}
-        {% include "admin_dashboard.html" %}
+        {% include "admin_profile.html" %}
 {%elif user.role == 'STUDENT'%}
-        {% include "student_dashboard.html" %}
+        {% include "student_profile.html" %}
 {%elif user.role == 'LECTURER'%}
-        {% include "student_dashboard.html" %}
+        {% include "lecturer_profile.html" %}
 {%endif%}
     
     {% block body %}{% endblock %}

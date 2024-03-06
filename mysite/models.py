@@ -113,3 +113,21 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.unit.name} - Cart"
+
+
+class QRCode(models.Model):
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    lecture_date = models.DateField()
+    qr_code_image = models.ImageField(upload_to='qr_codes/', null=True, blank=True)
+
+    def __str__(self):
+        return f"QR Code for {self.unit.code} - {self.lecture_date}"
+
+
+class Attendance(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    lecture_date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.unit.code} - {self.lecture_date}"

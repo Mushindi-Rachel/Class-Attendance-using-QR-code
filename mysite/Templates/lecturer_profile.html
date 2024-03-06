@@ -1,0 +1,26 @@
+{% extends "lecturer_dashboard.html" %}
+
+{% block content %}
+
+<h2>Personal Information:</h2>
+<table>
+    <tr>
+        <th>Staff ID: </th>
+        <td>{{LecturerProfile.staff_id}}</td>
+    </tr>
+    <tr>
+        <th>Name: </th>
+        <td>{{LecturerProfile.name}}</td>
+    </tr>
+    <tr>
+        <th>Email: </th>
+        <td>{{LecturerProfile.email}}</td>
+    </tr>
+    <tr>
+        <th>Department: </th>
+        <td>{{LecturerProfile.department}}</td>
+    </tr>
+</table>
+    <a href="{%url 'lecturer_update'%}"><button type="submit">Edit Information</button></a>
+
+{%endblock%}

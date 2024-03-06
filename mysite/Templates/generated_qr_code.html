@@ -1,0 +1,7 @@
+{% extends "lecturer_dashboard.html" %}
+
+{% block content %}
+  <h1>Generated QR Code</h1>
+  <img src="{{ qr_code.qr_code_image.url }}" alt="QR Code">
+<p><a href="{% url 'generated_qr_code' qr_code_id=qr_code.pk %}" download>Download QR Code</a></p>
+

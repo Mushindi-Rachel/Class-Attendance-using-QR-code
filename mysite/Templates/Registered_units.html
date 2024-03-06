@@ -1,1 +1,19 @@
 {% extends "student_dashboard.html" %}
+
+{% block content %}
+<h2>Registered Units</h2>
+<table>
+    <tr>
+        <th>Unit Code</th>
+        <th>Unit Name</th>
+    </tr>
+    
+  {% for user_unit in user_units %}
+  <tr>
+    <td>{{ user_unit.unit.code}} </td>
+        <td>{{ user_unit.unit.name}}</td>
+    </tr>
+  {% endfor %}
+   
+</table>
+{% endblock %}

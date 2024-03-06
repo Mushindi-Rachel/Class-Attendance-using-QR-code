@@ -9,7 +9,8 @@ class User(AbstractUser):
         STUDENT = 'STUDENT', _('Student')
         TEACHER = 'TEACHER', _('Teacher')
 
-    role = models.CharField(max_length=50, choices=Role.choices, default=Role.STUDENT)
+    role = models.CharField(max_length=50, choices=Role.choices,
+                            default=Role.STUDENT)
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -21,7 +22,8 @@ class User(AbstractUser):
 
 
 class Lecturer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='lecturer_profile')
+    user = models.OneToOneField(User, on_delete=models.CASCADE,
+                                related_name='lecturer_profile')
 
     def __str__(self):
         return str(self.user)

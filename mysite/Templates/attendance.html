@@ -1,34 +1,56 @@
 {% extends "student_dashboard.html" %}
 
 {% block content %}
-
+<div class="container">
     <h1>Scan QR Code</h1>
-    <video id="scanner"></video>
+    <video id="video" style="width:30%"></video>
+    <canvas id="canvas" style="width:30%" willReadFrequently="true"></canvas>
+
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
     <script>
-        // Check if Instascan is supported
-        if (typeof Instascan === 'undefined') {
-            console.error('Instascan library is not loaded.');
-        } else {
-            // Initialize Instascan scanner
-            let scanner = new Instascan.Scanner({ video: document.getElementById('scanner') });
+        let scanner = new Instascan.Scanner({ video: document.getElementById('video') });
+        scanner.addListener('scan', function (content) {
+            // Extracted QR code data
+            console.log('Scanned QR code data:', content);
             
-            // Add listener for QR code scan
-            scanner.addListener('scan', function(content) {
-                // Redirect to a Django view with the scanned QR code data
-                window.location.href = '/process_qr_code?data=' + encodeURIComponent(content);
+            // Send the scanned QR code data to the backend for processing
+            let formData = new FormData();
+            formData.append('qr_code_data', content);
+            fetch('/record_attendance/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Attendance recorded successfully');
+                    // Optionally, provide feedback to the user
+                } else {
+                    console.error('Failed to record attendance');
+                    // Optionally, provide feedback to the user
+                }
+            })
+            .catch(error => {
+                console.error('Error recording attendance:', error);
+                // Optionally, provide feedback to the user
             });
-            
-            // Start scanning
-            Instascan.Camera.getCameras().then(function(cameras) {
+        });
+        Instascan.Camera.getCameras()
+            .then(function (cameras) {
                 if (cameras.length > 0) {
                     scanner.start(cameras[0]);
                 } else {
-                    console.error('No cameras found.');
+                    console.error('No cameras found');
+                    // Optionally, provide feedback to the user
                 }
-            }).catch(function(e) {
-                console.error('Error accessing cameras:', e);
+            })
+            .catch(function (error) {
+                console.error('Error accessing camera:', error);
+                // Optionally, provide feedback to the user
             });
-        }
     </script>
+</div>
 
 {% endblock %}

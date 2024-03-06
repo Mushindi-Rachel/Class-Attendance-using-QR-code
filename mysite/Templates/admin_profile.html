@@ -1,0 +1,25 @@
+{% extends "admin_dashboard.html" %}
+
+{% block content %}
+<h2>Personal Information:</h2>
+<table>
+    <tr>
+        <th>Staff ID: </th>
+        <td>{{CustomAdmin.staff_id}}</td>
+    </tr>
+    <tr>
+        <th>Name: </th>
+        <td>{{CustomAdmin.name}}</td>
+    </tr>
+    <tr>
+        <th>Email: </th>
+        <td>{{CustomAdmin.email}}</td>
+    </tr>
+    <tr>
+        <th>Department: </th>
+        <td>{{CustomAdmin.department}}</td>
+    </tr>
+</table>
+<a href="{%url 'admin_update'%}"> <button type="submit">Edit Information</button></a>
+
+{%endblock%}
