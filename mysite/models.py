@@ -13,7 +13,7 @@ class User(AbstractUser):
         (LECTURER, 'Lecturer'),
         (STUDENT, 'Student'),
     ]
-    
+
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=STUDENT)
     email = models.EmailField(unique=True, max_length=50)
     username = models.CharField(unique=True, max_length=20)
@@ -25,7 +25,7 @@ class CustomAdmin(models.Model):
     staff_id = models.CharField(max_length=30, unique=True)
     name = models.CharField(max_length=100, blank=True, null=True)
     email = models.EmailField(unique=True)
-    
+
     def __str__(self):
         return f"{self.staff_id} - {self.name} - {self.email}"
 
@@ -77,18 +77,21 @@ class Program(models.Model):
         return self.name
 
 
-class Year(models.Model):
-    year = models.FloatField()
-
-    def __str__(self):
-        return str(self.year)
-
-
 class Unit(models.Model):
+    YEAR_CHOICES = [
+        (1.1, '1.1'),
+        (1.2, '1.2'),
+        (2.1, '2.1'),
+        (2.2, '2.2'),
+        (3.1, '3.1'),
+        (3.2, '3.2'),
+        (4.1, '4.1'),
+        (4.2, '4.2'),
+    ]
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=10, default='INTE000')
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
-    year = models.ForeignKey(Year, on_delete=models.CASCADE)
+    year = models.FloatField(max_length=20, choices=YEAR_CHOICES, default=0.0)
 
     def __str__(self):
         return self.name

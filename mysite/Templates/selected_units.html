@@ -1,0 +1,34 @@
+{% extends "student_dashboard.html" %}
+
+{%block content%}
+
+<div>
+    <h2>Selected Units</h2>
+    {% if cart_items %}
+        <table>
+            <tr>
+            <th>Unit Name</th>
+            <th>Unit Code</th>
+            <th>Actions</th>
+            </tr>
+            <tr>
+            {% for item in cart_items %}
+                <td>{{ item.unit.name }}</td> 
+                <td> {{ item.unit.code }}</td>
+            {% endfor %}
+            <td>
+        <form method="post"  action="{% url 'remove_from_cart' unit.id %}">
+            {% csrf_token %}
+          <button type='submit'>Remove Item</button>
+        </td>
+      </tr>
+          </form>
+        </table>
+          <button type='submit'>Register Units</button>
+    {% else %}
+
+        <p>No units selected.</p>
+    {% endif %}
+        </div>
+
+        {%endblock%}

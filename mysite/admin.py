@@ -3,7 +3,7 @@ from .models import Unit
 from .models import StudentProfile
 from .models import LecturerProfile
 from .models import User, CustomAdmin
-from .models import Department, CartItem, UserUnit, Program, Year
+from .models import Department, CartItem, UserUnit, Program
 # # from .models import Admin
 
 # # Register your models here.
@@ -16,5 +16,5 @@ admin.site.register(Department)
 admin.site.register(CartItem)
 admin.site.register(UserUnit)
 admin.site.register(Program)
-admin.site.register(Year)
+
 

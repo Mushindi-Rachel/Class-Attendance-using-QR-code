@@ -1,11 +1,15 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,  get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import FileResponse
 from django.contrib.auth.decorators import login_required
 from .utils import generate_qr_code
-from .models import Program, Year, Unit, UserUnit, CartItem, User
-from .forms import LoginForm, LecturerRegistrationForm, StudentRegistrationForm, AdminRegistrationForm, UserRegistrationForm
+from .models import Program, Unit, UserUnit, CartItem, User
+from .forms import LoginForm, AdminRegistrationForm, UserRegistrationForm
+from django.contrib import messages
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def index(request):
@@ -133,10 +137,6 @@ def home(request):
     return render(request, 'home.html',)
 
 
-def register_course(request):
-    return render(request, 'register_course.html')
-
-
 def student_dashboard(request):
     return render(request, 'student_dashboard.html')
 
@@ -150,120 +150,167 @@ def admin_dashboard(request):
 
 
 @login_required
-def choose_year(request):
-    print("View function called")
-    years = Year.objects.all()
-    print(years)
-    return render(request, 'register_course.html', {'years': years})
+def choose_and_display_units(request):
+    if request.method == 'POST':
+        selected_year = request.POST.get('year')
+        if selected_year:
+            units = Unit.objects.filter(year=selected_year)
+        else:
+            messages.error(request, "No year selected.")
+            units = None
+    else:
+        selected_year = None
+        units = None
+
+    years = Unit.objects.values_list('year', flat=True).distinct()  # Retrieve distinct years
+    return render(request, 'register_course.html', {'years': years, 'selected_year': selected_year, 'units': units})
+
+
+@login_required
+def add_to_cart(request):
+    if request.method == 'POST':
+        unit_id = request.POST.get('unit_id')
+        if unit_id:
+            unit = get_object_or_404(Unit, id=unit_id)
+            cart_item, created = CartItem.objects.get_or_create(user=request.user, unit=unit)
+            if created:
+                messages.success(request, "Unit added to cart successfully.")
+            else:
+                messages.info(request, "Unit is already in the cart.")
+    return redirect('selected_units')
+
+
+@login_required
+def view_cart(request):
+    try:
+        cart_items = CartItem.objects.filter(user=request.user)
+        logger.debug(f"Retrieved {len(cart_items)} cart items for user {request.user.username}")
+        return render(request, 'selected_units.html', {'cart_items': cart_items})
+    except Exception as e:
+        logger.error(f"Error retrieving cart items for user {request.user.username}: {e}")
+        messages.error(request, "An error occurred while retrieving your cart items.")
+        return render(request, 'selected_units.html', {'cart_items': []})
+
+
+@login_required
+def remove_from_cart(request, item_id):
+    cart_item = CartItem.objects.get(id=item_id)
+    cart_item.delete()
+    messages.success(request, 'Item removed from cart.')
+    return redirect('register_course')
+
+
+@login_required
+def registered_units(request):
+    _units = UserUnits.objects.filter(user=request.user)
+    
+    # # Initialize a list to store order summaries
+    # _units = []
+    
+    # # Iterate over user's orders
+    # for UserUnits in user_units:
+    #     # Retrieve order items associated with the order
+      
+    return render(request, 'registered_units.html')
+
+
+
 
 # @login_required
-# def display_units(request):
-#     if request.method == 'POST':
-#         year_id = request.POST.get('year')
-#         if year_id:
-#             year = Year.objects.get(pk=year_id)
-#             units = Unit.objects.filter(year=year)
-#             return render(request, 'register_course.html', {'units': units})
+# def get_units(request):
+#     if request.user.is_authenticated:
+#         if request.method == 'POST':
+#             selected_year_id = request.POST.get('year')
+#             selected_program = Program.objects.get(id=selected_program_id)
+#             selected_year = Year.objects.get(id=selected_year_id)
+#             units = Unit.objects.filter(program=selected_program, year=selected_year)
+#             return render(request, 'units.html', {'units': units})
+#         else:
+#             return render(request, 'get_units.html', {'programs': Program.objects.all(), 'years': Year.objects.all()})
 #     else:
-#         return render(request, 'register_course.html', {'years': years})
+#         return redirect('login')
+
+# @login_required
+# def register_units(request):
+#     if request.method == 'POST':
+#         unit_ids = request.POST.getlist('add_unit')
+#         user = request.user
+#         for unit_id in unit_ids:
+#             unit = Unit.objects.get(id=unit_id)
+#             UserUnit.objects.create(user=user, unit=unit)
+#         return redirect('units')  # Redirect to a page showing registered units or any other appropriate page
+#     else:
+#         return redirect('units')
 
 
-@login_required
-def get_units(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            selected_program_id = request.POST.get('program')
-            selected_year_id = request.POST.get('year')
-            selected_program = Program.objects.get(id=selected_program_id)
-            selected_year = Year.objects.get(id=selected_year_id)
-            units = Unit.objects.filter(program=selected_program, year=selected_year)
-            return render(request, 'units.html', {'units': units})
-        else:
-            return render(request, 'get_units.html', {'programs': Program.objects.all(), 'years': Year.objects.all()})
-    else:
-        return redirect('login')
-
-@login_required
-def register_units(request):
-    if request.method == 'POST':
-        unit_ids = request.POST.getlist('add_unit')
-        user = request.user
-        for unit_id in unit_ids:
-            unit = Unit.objects.get(id=unit_id)
-            UserUnit.objects.create(user=user, unit=unit)
-        return redirect('units')  # Redirect to a page showing registered units or any other appropriate page
-    else:
-        return redirect('units')
+# @login_required
+# def remove_unit(request, item_id):
+#     unit = CartItems.objects.get(id=item_id)
+#     unit.delete()
+#     messages.success(request, 'Unit removed from cart.')
+#     return redirect('units')
 
 
-@login_required
-def remove_unit(request, item_id):
-    unit = CartItems.objects.get(id=item_id)
-    unit.delete()
-    messages.success(request, 'Unit removed from cart.')
-    return redirect('units')
-
-
-@login_required
-def drop_unit(request, item_id):
-    unit = Items.objects.get(id=item_id)
-    unit.delete()
-    messages.success(request, 'Unit dropped!.')
-    return redirect('units')
+# @login_required
+# def drop_unit(request, item_id):
+#     unit = Items.objects.get(id=item_id)
+#     unit.delete()
+#     messages.success(request, 'Unit dropped!.')
+#     return redirect('units')
 
 
 def attendance(request):
     return render(request, 'attendance.html')
 
 
-def process_qr_code(request):
-    qr_code_data = request.GET.get('data')
-    # Process the scanned QR code data as needed
-    return render(request, 'attendance.html', {'qr_code_data': qr_code_data})
+# def process_qr_code(request):
+#     qr_code_data = request.GET.get('data')
+#     # Process the scanned QR code data as needed
+#     return render(request, 'attendance.html', {'qr_code_data': qr_code_data})
     
 
-def take_attendance(request):
-    return render(request, 'take_attendance.html')
+# def take_attendance(request):
+#     return render(request, 'take_attendance.html')
 
 
-def add_student(request):
-    if request.method == 'POST':
-        form = StudentRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
+# def add_student(request):
+#     if request.method == 'POST':
+#         form = StudentRegistrationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
 
-    else:
-        form = StudentRegistrationForm()
-    return render(request, 'add_student.html', {'form': form})
-
-
-def add_staff(request):
-    if request.method == 'POST':
-        form = LecturerRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('add_staff')
-    else:
-        form = LecturerRegistrationForm()
-    return render(request, 'add_staff.html', {'form': form})
+#     else:
+#         form = StudentRegistrationForm()
+#     return render(request, 'add_student.html', {'form': form})
 
 
-def attendance_analysis(request):
-    return render(request, 'attendance_analysis.html')
+# def add_staff(request):
+#     if request.method == 'POST':
+#         form = LecturerRegistrationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('add_staff')
+#     else:
+#         form = LecturerRegistrationForm()
+#     return render(request, 'add_staff.html', {'form': form})
 
 
-def generate_qr(request):
-    if request.method == 'POST':
-        form = QRForm(request.POST)
-        if form.is_valid():
-            date = form.cleaned_data['lecture_date']
-            unit_code = form.cleaned_data['unit_code']
-            generated_qr_filename = generate_qr_code(date, unit_code)
-            # Open the generated file and serve it as a download
-            with open(generated_qr_filename, 'rb') as f:
-                response = FileResponse(f)
-                response['Content-Disposition'] = f'attachment; filename="{urlquote(generated_qr_filename)}"'
-                return response
-    else:
-        form = QRForm()
-    return render(request, 'generate_qr.html', {'form': form})
+# def attendance_analysis(request):
+#     return render(request, 'attendance_analysis.html')
+
+
+# def generate_qr(request):
+#     if request.method == 'POST':
+#         form = QRForm(request.POST)
+#         if form.is_valid():
+#             date = form.cleaned_data['lecture_date']
+#             unit_code = form.cleaned_data['unit_code']
+#             generated_qr_filename = generate_qr_code(date, unit_code)
+#             # Open the generated file and serve it as a download
+#             with open(generated_qr_filename, 'rb') as f:
+#                 response = FileResponse(f)
+#                 response['Content-Disposition'] = f'attachment; filename="{urlquote(generated_qr_filename)}"'
+#                 return response
+#     else:
+#         form = QRForm()
+#     return render(request, 'generate_qr.html', {'form': form})

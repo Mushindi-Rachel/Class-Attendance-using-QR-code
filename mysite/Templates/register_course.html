@@ -6,37 +6,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Choose Year</title>
+    <title>Display Units</title>
 </head>
 <body>
     <h2>Choose Academic Year</h2>
-    {% if years %}
     <form method="post">
         {% csrf_token %}
         <label for="year">Choose Year:</label>
         <select name="year" id="year">
-            <option Selected disabled="true">--Year--</option>
+            <option selected disabled>--Select Year--</option>
             {% for year in years %}
-                <option value="{{ year.year }}">{{ year.year }}</option>
+                <option value="{{ year }}">{{ year }}</option>
             {% endfor %}
         </select>
         <button type="submit">Submit</button>
     </form>
-    {% else %}
-    <p>No years found.</p>
-{% endif %}
-    
 
     {% if units %}
-    <h2>Units for Selected Year</h2>
-    <ul>
-        {% for unit in units %}
-            <li>{{ unit.name }} {{ unit.name }}</li>
-        {% endfor %}
-    </ul>
+        <h2>Units for Selected Year</h2>
+        <table>
+            {% for unit in units %}
+            <tr>
+                <td>{{ unit.name }} - {{ unit.code }}</td>
+                <td><form method="post" action="{% url 'add_to_cart' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="unit_id" value="{{ unit.id }}">
+                    <button type="submit">Add Unit</button>
+                </form></td>
+            </tr>
+            {% endfor %}
+            </table>
+    {% else %}
+        <p>No units found for the selected year.</p>
     {% endif %}
+
+
 </body>
 </html>
+
 
 {%endblock%}
 
