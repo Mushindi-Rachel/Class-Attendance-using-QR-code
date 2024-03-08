@@ -14,20 +14,26 @@
         <div class="header">
             <img src="{% static 'images/logoE.png' %}" alt="Logo">
         </div>
+        <div class="user">
+        <center><p>You are logged in as: {{ student_profile.name }}</p></canter>
+        </div>
 
         <div class="logout_btn">
-            <button><a href="{% url 'login' %}"></a>Logout<img src="{% static 'images/btn-login-hover.png' %}"></button>
+            <a href="{% url 'logout' %}"><button>Logout<img src="{% static 'images/btn-login-hover.png' %}"></button></a>
         </div>
         
         <!-- Add navigation menu -->
         <nav class="sidenav">
+            <div id="sidenav_bar">
             <table>
               <tr><td><a href="{% url 'student_profile' %}">Dashboard</a></td></tr> 
               <tr><td><a href="{% url 'register_course' %}">Register Units</a></td></tr>
               <tr><td><a href="{% url 'selected_units' %}">Selected Units</a></td></tr>
               <tr><td><a href="{% url 'registered_units' %}">Registered Units</a></td></tr>
               <tr><td><a href="{% url 'attendance' %}">Attendance</a></td></tr>
+              {% comment %} <tr><td><a href="{% url '' %}">Attendance feedback</a></td></tr> {% endcomment %}
             </table>
+            <div>
         </nav>
     </header>
 

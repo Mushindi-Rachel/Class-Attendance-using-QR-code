@@ -1,14 +1,7 @@
 {% extends "student_dashboard.html" %}
 
 {% block content %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Display Units</title>
-</head>
-<body>
+<div class="container">
     <h2>Choose Academic Year</h2>
     <form method="post">
         {% csrf_token %}
@@ -22,12 +15,24 @@
         <button type="submit">Submit</button>
     </form>
 
+    {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
     {% if units %}
         <h2>Units for Selected Year</h2>
-        <table>
+        <table class="tables">
+            <tr>
+                <th>Unit Name</th>
+                <th>Unit Code</th>
+                <th>Action</th>
+            </tr>
             {% for unit in units %}
             <tr>
-                <td>{{ unit.name }} - {{ unit.code }}</td>
+                <td>{{ unit.name }}</td>
+                <td>{{ unit.code }}</td>
                 <td><form method="post" action="{% url 'add_to_cart' %}">
                     {% csrf_token %}
                     <input type="hidden" name="unit_id" value="{{ unit.id }}">
@@ -41,8 +46,7 @@
     {% endif %}
 
 
-</body>
-</html>
+        </div>
 
 
 {%endblock%}

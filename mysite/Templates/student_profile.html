@@ -1,9 +1,9 @@
 {% extends "student_dashboard.html" %}
-
 {% block content %}
+
 <h2>Personal Information:</h2>
 {% if student_profile %}
-<table>
+<table class="profile">
     <tr>
       <th>Registration Number:</th>
       <td>{{ student_profile.reg_no }}</td>
@@ -29,10 +29,61 @@
       <td>{{ student_profile.gender }}</td>
     </tr>
   </table>
-    <a href="{%url 'student_update'%}"><button type="submit">Edit Information</button></a>
-    {% else %}
-    <p>No profile found for the logged-in user.</p>
-    <a href="{%url 'student_update'%}"><button type="submit">Add Information</button></a>
-  {% endif %}
+  <a href="{% url 'student_update' %}"><button type="submit" class="button">Edit Information</button></a>
+  
 
-{%endblock%}
+    
+{% else %}
+<p>No profile found for the logged-in user.</p>
+<a href="{% url 'student_update' %}"><button type="submit">Add Information</button></a>
+{% endif %}
+
+<div>
+  <h1>Attendance Progress</h1>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <div style="display: flex; flex-wrap: wrap;">
+    {% for attendance_progress in attendance_progress_list %}
+    <div style="margin-right: 20px;"> <!-- Adjust margin as needed -->
+      <h3>Unit Code: {{ attendance_progress.unit_code }}</h3>
+      <canvas width="200" height="200" id="attendance-progress-chart-{{ forloop.counter }}"></canvas>
+    </div>
+    <script>
+      var ctx{{ forloop.counter }} = document.getElementById('attendance-progress-chart-{{ forloop.counter }}').getContext('2d');
+      var attendanceData{{ forloop.counter }} = {
+        labels: ['Attendance', 'Absent'],
+        datasets: [{
+          data: [{{ attendance_progress.attendance_percentage }}, {{ attendance_progress.absent_percentage }}],
+          backgroundColor: [
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(255, 99, 132, 0.5)'
+          ],
+          borderColor: [
+            'rgba(75, 192, 192, 1)',
+            'rgba(255, 99, 132, 1)'
+          ],
+          borderWidth: 1
+        }]
+      };
+      var options{{ forloop.counter }} = {
+        responsive: false,
+        maintainAspectRatio: false,
+        cutoutPercentage: 70,
+        animation: {
+          animateScale: true,
+          animateRotate: true
+        },
+        legend: {
+          display: false
+        }
+      };
+      var attendanceChart{{ forloop.counter }} = new Chart(ctx{{ forloop.counter }}, {
+        type: 'doughnut',
+        data: attendanceData{{ forloop.counter }},
+        options: options{{ forloop.counter }}
+      });
+    </script>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

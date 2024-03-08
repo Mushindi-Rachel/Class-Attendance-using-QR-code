@@ -1,10 +1,16 @@
 {% extends "student_dashboard.html" %}
 
 {% block content %}
+
 <div class="container">
-    <h1>Scan QR Code</h1>
-    <video id="video" style="width:30%"></video>
-    <canvas id="canvas" style="width:30%" willReadFrequently="true"></canvas>
+    <h2>Scan QR Code</h2>
+    {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+    <video id="video" style="width:50%"></video>
+    <canvas id="canvas" style="width:50%" willReadFrequently="true"></canvas>
 
     <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
     <script>
@@ -51,6 +57,10 @@
                 // Optionally, provide feedback to the user
             });
     </script>
+    <form id="attendance_form" action="{% url 'record_attendance' %}" method="POST" style="display: none;">
+        {% csrf_token %}
+        <input type="hidden" id="qr_code_data" name="qr_code_data">
+    </form>
 </div>
 
 {% endblock %}

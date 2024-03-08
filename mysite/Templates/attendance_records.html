@@ -1,0 +1,18 @@
+{% extends "lecturer_dashboard.html" %}
+
+{% block content %}
+<h2>Attendance Records - {{ unit.name }}</h2>
+<table class="tables">
+    <tr>
+        <th>Date</th>
+        <th>Student</th>
+    </tr>
+    
+  {% for attendance in unit_attendance %}
+  <tr>
+    <td>{{ attendance.lecture_date }}</td> 
+    <td>{{ attendance.user.username }}</td> 
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

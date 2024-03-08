@@ -1,5 +1,29 @@
 {% extends "lecturer_dashboard.html" %}
 
 {% block content %}
+<h2>Units Assigned to You</h2>
+<table class="tables">
+    <tr>
+        <th>Unit Code</th>
+        <th>Unit Name</th>
+        <th>Attendance</th>
+    </tr>
+    
+  {% for unit in assigned_units %}
+  <tr>
+    <td>{{ unit.code }}</td> 
+    <td>{{ unit.name }}</td> 
+    <td><form method="post" action="{%url 'attendance_records' unit_id=unit.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="unit_id" value="{{ unit.id }}">
+        <button type="submit">View Details</button>
+    </form></td> 
+</tr>
+  {% endfor %}
+    
+</table>
 
 {%endblock%}
+
+ 
+

@@ -14,17 +14,22 @@
         <div class="header">
             <img src="{% static 'images/logoE.png' %}" alt="Logo">
         </div>
+        <div class="user">
+            <center><p>You are logged in as: {{ admin_profile.name }}</p></canter>
+            </div>
         <div class="logout_btn">
-            <button><a href="{% url 'login' %}"></a>Logout<img src="{% static 'images/btn-login-hover.png' %}"></button>
+            <a href="{% url 'logout' %}"><button>Logout<img src="{% static 'images/btn-login-hover.png' %}"></button></a>
         </div>
         
         <!-- Add navigation menu -->
         <nav class="sidenav">
+            <div id="sidenav_bar">
             <table>
               <tr><td><a href="{% url 'admin_profile' %}">Dashboard</a></td></tr> 
               <tr><td><a href="{% url 'add_user' %}">Add New User</a></td></tr>
-              <tr><td><a href="{% url 'A_analysis' %}">Attendance Analysis</a></td></tr>
+              <tr><td><a href="{% url 'view_units' %}">Attendance Analysis</a></td></tr>
             </table>
+            <div>
         </nav>
     </header>
 
@@ -35,10 +40,10 @@
     </main>
 
     <!-- Common footer -->
-    <footer>
+     <footer>
         <div class="footer">
         <p>&copy; 2024 E-school</p>
     </div>
     </footer>
 </body>
-</html>
+</html> 

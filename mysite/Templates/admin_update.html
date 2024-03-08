@@ -1,9 +1,12 @@
 {%extends 'admin_dashboard.html'%}
 {%block content%}
+<div class="container"> 
+<h2>Edit Personal imformation</h2>
+<div class="update"> 
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save</button>
+    <button type="submit" >Save</button>
 </form>
-
+</div>
 {%endblock%}

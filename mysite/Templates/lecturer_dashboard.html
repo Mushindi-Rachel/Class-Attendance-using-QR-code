@@ -14,9 +14,12 @@
         <div class="header">
             <img src="{% static 'images/logoE.png' %}" alt="Logo">
         </div>
+        <div class="user">
+            <center><p>You are logged in as: {{ lecturer_profile.name }}</p></canter>
+            </div>
 
         <div class="logout_btn">
-            <button><a href="{% url 'login' %}"></a>Logout<img src="{% static 'images/btn-login-hover.png' %}"></button>
+            <a href="{% url 'logout' %}"><button>Logout<img src="{% static 'images/btn-login-hover.png' %}"></button></a>
         </div>
         
         <!-- Add navigation menu -->

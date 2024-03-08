@@ -1,5 +1,21 @@
 {% extends "admin_dashboard.html" %}
-
 {% block content %}
-
-{%endblock%}
+<div style="padding: 2px;">
+<h2>Attendance Records - {{ unit_attendance.0.unit.name }}</h2>
+<table class="tables" style="padding: 20px;">
+    <tr>
+        <th>Registration No</th>
+        <th>Name</th>
+        <th>Attendance Percentage</th>
+    </tr>
+    
+  {% for attendance in unit_attendance %}
+  <tr>
+    <td>{{ attendance.user.studentprofile.reg_no }}</td>
+    <td>{{ attendance.user.studentprofile.name }}</td>
+    <td>{{ attendance.attendance_percentage }}%</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

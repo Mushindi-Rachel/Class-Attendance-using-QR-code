@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -7,7 +6,7 @@ class User(AbstractUser):
     ADMIN = 'ADMIN'
     LECTURER = 'LECTURER'
     STUDENT = 'STUDENT'
-    
+
     ROLE_CHOICES = [
         (ADMIN, 'Admin'),
         (LECTURER, 'Lecturer'),
@@ -66,6 +65,13 @@ class StudentProfile(models.Model):
     def get_absolute_url(self):
         return "/student/profile/%i/" % self.reg_no
 
+    def attendance_percentage(self, unit):
+        try:
+            user_unit = self.user.userunit_set.get(unit=unit)
+            return user_unit.attendance_percentage()
+        except UserUnit.DoesNotExist:
+            return 0
+
     def __str__(self):
         return f"{self.reg_no}-{self.program}"
 
@@ -92,6 +98,8 @@ class Unit(models.Model):
     code = models.CharField(max_length=10, default='INTE000')
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
     year = models.FloatField(max_length=20, choices=YEAR_CHOICES, default=0.0)
+    total_classes = models.IntegerField(default=13)
+    lecturer = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -101,6 +109,13 @@ class UserUnit(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     registered_on = models.DateTimeField(auto_now_add=True)
+    classes_attended = models.IntegerField(default=0)
+
+    def attendance_percentage(self):
+        if self.unit.total_classes == 0:
+            return 0
+        else:
+            return (self.classes_attended / self.unit.total_classes) * 100
 
     def __str__(self):
         return f"{self.user.username} - {self.unit.name}"
@@ -131,3 +146,13 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.unit.code} - {self.lecture_date}"
+
+    def save(self, *args, **kwargs):
+        # Call the original save method
+        super().save(*args, **kwargs)
+
+        # Increment classes_attended for the corresponding UserUnit instance
+        user_unit, created = UserUnit.objects.get_or_create(user=self.user, unit=self.unit)
+        if not created:
+            user_unit.classes_attended += 1
+            user_unit.save(update_fields=['classes_attended'])

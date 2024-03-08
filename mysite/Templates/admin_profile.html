@@ -2,24 +2,28 @@
 
 {% block content %}
 <h2>Personal Information:</h2>
-<table>
+{% if admin_profile %}
+<table class="profile">
     <tr>
         <th>Staff ID: </th>
-        <td>{{CustomAdmin.staff_id}}</td>
+        <td>{{admin_profile.staff_id}}</td>
     </tr>
     <tr>
         <th>Name: </th>
-        <td>{{CustomAdmin.name}}</td>
+        <td>{{admin_profile.name}}</td>
     </tr>
     <tr>
         <th>Email: </th>
-        <td>{{CustomAdmin.email}}</td>
+        <td>{{admin_profile.email}}</td>
     </tr>
     <tr>
         <th>Department: </th>
-        <td>{{CustomAdmin.department}}</td>
+        <td>{{admin_profile.department}}</td>
     </tr>
 </table>
-<a href="{%url 'admin_update'%}"> <button type="submit">Edit Information</button></a>
-
+<a href="{%url 'admin_update'%}"> <button type="submit" class="button">Edit Information</button></a>
+{% else %}
+<p>No profile found for the logged-in user.</p>
+<a href="{% url 'admin_update' %}"><button type="submit">Add Information</button></a>
+{% endif %}
 {%endblock%}

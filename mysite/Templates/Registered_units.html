@@ -1,8 +1,9 @@
 {% extends "student_dashboard.html" %}
 
 {% block content %}
+<div class="container">
 <h2>Registered Units</h2>
-<table>
+<table class="tables">
     <tr>
         <th>Unit Code</th>
         <th>Unit Name</th>
@@ -16,4 +17,5 @@
   {% endfor %}
    
 </table>
+</div>
 {% endblock %}
