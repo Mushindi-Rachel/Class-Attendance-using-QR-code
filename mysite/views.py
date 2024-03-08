@@ -116,7 +116,7 @@ def student_update(request):
 
 def home(request):
     return render(request, 'home.html',)
-    
+ 
 
 def lecturer_profile(request):
     if request.user.is_authenticated:
@@ -243,6 +243,9 @@ def registered_units(request):
 #     messages.success(request, 'Unit dropped!.')
 #     return redirect('units')
 
+def take_attendance(request):
+    return render(request, 'take_attendance.html',)
+
 
 @login_required
 def generate_qr_code(request):
@@ -288,6 +291,10 @@ def generated_qr_code(request, qr_code_id):
     return response
 
 
+def attendance(request):
+    return render(request, 'attendance.html',)
+
+
 @login_required
 def record_attendance(request):
     if request.method == 'POST':
@@ -305,7 +312,7 @@ def record_attendance(request):
                 # Record attendance
                 attendance = Attendance.objects.create(user=user, unit=unit, lecture_date=lecture_date)
                 messages.success(request, 'Attendance recorded successfully.')
-                return redirect('student_profile')  # Redirect to a success page
+                return redirect('record_attendance')  # Redirect to a success page
             else:
                 messages.error(request, 'Error: User is not registered for the unit.')
                 return redirect('failure_page')  # Redirect to a failure page if not registered for the unit
