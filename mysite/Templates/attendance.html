@@ -32,15 +32,12 @@
             .then(response => {
                 if (response.ok) {
                     alert('Attendance recorded successfully');
-                    // Optionally, provide feedback to the user
                 } else {
                     console.error('Failed to record attendance');
-                    // Optionally, provide feedback to the user
                 }
             })
             .catch(error => {
                 console.error('Error recording attendance:', error);
-                // Optionally, provide feedback to the user
             });
         });
         Instascan.Camera.getCameras()
@@ -49,12 +46,10 @@
                     scanner.start(cameras[0]);
                 } else {
                     console.error('No cameras found');
-                    // Optionally, provide feedback to the user
                 }
             })
             .catch(function (error) {
                 console.error('Error accessing camera:', error);
-                // Optionally, provide feedback to the user
             });
     </script>
     <form id="attendance_form" action="{% url 'record_attendance' %}" method="POST" style="display: none;">

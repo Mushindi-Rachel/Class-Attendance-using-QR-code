@@ -1,4 +1,6 @@
 import logging
+import math
+import qrcode
 from io import BytesIO
 from django.core.files import File
 from django.shortcuts import render, redirect, reverse, get_object_or_404
@@ -10,7 +12,6 @@ from django.db.models import Value, F
 from django.http import Http404
 from django.http import HttpResponse
 from .utils import get_attendance_progress
-import qrcode
 from .models import Unit, UserUnit, CartItem, QRCode, Attendance
 from .models import StudentProfile, CustomAdmin, LecturerProfile
 from .forms import LoginForm, AdminRegistrationForm, UserRegistrationForm
@@ -168,8 +169,9 @@ def choose_and_display_units(request):
         selected_year = None
         units = None
 
-    years = Unit.objects.values_list('year', flat=True).distinct()  # Retrieve distinct years
-    return render(request, 'register_course.html', {'years': years, 'selected_year': selected_year, 'units': units})
+    years = Unit.objects.values_list('year', flat=True).distinct()
+    return render(request, 'register_course.html', {
+        'years': years, 'selected_year': selected_year, 'units': units})
 
 
 @login_required
@@ -192,7 +194,8 @@ def add_to_cart(request):
 def view_cart(request):
     try:
         cart_items = CartItem.objects.filter(user=request.user)
-        return render(request, 'selected_units.html', {'cart_items': cart_items})
+        return render(request, 'selected_units.html', {
+            'cart_items': cart_items})
     except ObjectDoesNotExist:
         messages.error(request, "No items found in your cart.")
     except Http404:
@@ -205,7 +208,6 @@ def view_cart(request):
 @login_required
 def remove_from_cart(request, unit_id):
     try:
-        # Check if the unit exists in the user's cart and get its corresponding cart item
         cart_item = CartItem.objects.get(unit_id=unit_id, user=request.user)
         cart_item.delete()
         messages.success(request, 'Item removed from cart.')
@@ -218,7 +220,6 @@ def remove_from_cart(request, unit_id):
 def register_units(request):
     if request.method == 'POST':
         cart_items = CartItem.objects.filter(user=request.user)
-        # Register units from cart items
         for cart_item in cart_items:
             unit = cart_item.unit
             # Create UserUnit object
@@ -226,7 +227,8 @@ def register_units(request):
 
         # Clear cart items
         cart_items.delete()
-        messages.success(request, "Units registered successfully and cart items cleared.")
+        messages.success(request,
+                         "Units registered successfully.")
     return redirect('choose_and_display_units')
 
 
@@ -235,13 +237,6 @@ def registered_units(request):
     user_units = UserUnit.objects.filter(user=request.user)
     return render(request, 'registered_units.html', {'user_units': user_units})
 
-
-# @login_required
-# def drop_unit(request, item_id):
-#     unit = Items.objects.get(id=item_id)
-#     unit.delete()
-#     messages.success(request, 'Unit dropped!.')
-#     return redirect('units')
 
 def take_attendance(request):
     return render(request, 'take_attendance.html',)
@@ -258,7 +253,9 @@ def generate_qr_code(request):
             unit = get_object_or_404(Unit, code=unit_code)
             qr_code_data = f"{unit_code},{lecture_date}"
             # Generate QR code
-            qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+            qr = qrcode.QRCode(version=1,
+                               error_correction=qrcode.constants.ERROR_CORRECT_L,
+                               box_size=10, border=4)
             qr.add_data(qr_code_data)
             qr.make(fit=True)
             img = qr.make_image(fill_color="black", back_color="white")
@@ -310,18 +307,22 @@ def record_attendance(request):
             # Check if the user is registered for the unit
             if user_units.filter(unit=unit).exists():
                 # Record attendance
-                attendance = Attendance.objects.create(user=user, unit=unit, lecture_date=lecture_date)
+                attendance = Attendance.objects.create(user=user,
+                                                       unit=unit,
+                                                       lecture_date=lecture_date)
                 messages.success(request, 'Attendance recorded successfully.')
-                return redirect('record_attendance')  # Redirect to a success page
+                return redirect('record_attendance')
             else:
-                messages.error(request, 'Error: User is not registered for the unit.')
-                return redirect('failure_page')  # Redirect to a failure page if not registered for the unit
+                messages.error(request,
+                               'Error: User is not registered for the unit.')
+                return redirect('failure_page')
         except ValueError:
             messages.error(request, 'Error: Unable to split QR code data.')
-            return render(request, 'attendance.html')  # Render a page for invalid QR code data
+            return render(request, 'attendance.html')
         except Unit.DoesNotExist:
-            messages.error(request, 'Error: Unit code does not exist in the database.')
-            return render(request, 'attendance.html')  # Render a page for invalid unit code
+            messages.error(request,
+                           'Error: Unit code does not exist in the database.')
+            return render(request, 'attendance.html')
     else:
         return render(request, 'student_profile.html')
 
@@ -339,7 +340,8 @@ def assigned_units(request):
 def attendance_records(request, unit_id):
     unit = get_object_or_404(Unit, pk=unit_id)
     unit_attendance = Attendance.objects.filter(unit=unit)
-    return render(request, 'attendance_records.html', {'unit': unit, 'unit_attendance': unit_attendance})
+    return render(request, 'attendance_records.html', {'unit': unit,
+                                                       'unit_attendance': unit_attendance})
 
 
 @login_required
@@ -355,8 +357,11 @@ def choose_year(request):
         selected_year = None
         units = None
 
-    years = Unit.objects.values_list('year', flat=True).distinct()  # Retrieve distinct years
-    return render(request, 'view_units.html', {'years': years, 'selected_year': selected_year, 'units': units})
+    years = Unit.objects.values_list('year', flat=True).distinct()
+    return render(request, 'view_units.html', {
+        'years': years,
+        'selected_year': selected_year,
+        'units': units})
 
 
 @login_required
@@ -369,8 +374,9 @@ def attendance_analysis(request, unit_id):
 
     for attendance in unit_attendance:
         attendance_percentage = (attendance.attended_classes / attendance.total_classes) * 100
-        attendance.attendance_percentage = attendance_percentage
-        attendance.absent_percentage = 100 - attendance_percentage
+        rounded_attendance = math.ceil(attendance_percentage)
+        attendance.attendance_percentage = rounded_attendance
+        attendance.absent_percentage = 100 - rounded_attendance
         attendance.save()
 
     context = {
