@@ -5,11 +5,11 @@
     <h2>Choose Academic Year</h2>
     <form method="post">
         {% csrf_token %}
-        <label for="year">Choose Year:</label>
-        <select name="year" id="year">
+        <label for="academic_year">Choose Year:</label>
+        <select name="academic_year" id="year">
             <option selected disabled>--Select Year--</option>
-            {% for year in years %}
-                <option value="{{ year }}">{{ year }}</option>
+            {% for academic_year in academic_years %}
+                <option value="{{ academic_year }}">{{ academic_year }}</option>
             {% endfor %}
         </select>
         <button type="submit">Submit</button>
@@ -42,11 +42,47 @@
             {% endfor %}
             </table>
     {% else %}
-        <p>No units found for the selected year.</p>
+        <p>No units found for the selected academic year.</p>
     {% endif %}
 
 
         </div>
+
+        <div class="container">
+            <h2>Selected Units</h2>
+            {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+        {% if cart_items %}
+        <table class="tables">
+            <tr>
+                <th>Unit Name</th>
+                <th>Unit Code</th>
+                <th>Actions</th>
+            </tr>
+            {% for cart_item in cart_items %}
+                <tr>
+                    <td>{{ cart_item.unit.name }}</td> 
+                    <td>{{ cart_item.unit.code }}</td>
+                    <td>
+                        <form method="post" action="{% url 'remove_from_cart' cart_item.unit.id %}">
+                            {% csrf_token %}
+                            <button type='submit'>Remove Item</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <form method="post" action="{% url 'register_units' %}">
+            {% csrf_token %}
+            <button type="submit" class="button">Register Units</button>
+        </form>
+    {% else %}
+        <p>No units selected.</p>
+    {% endif %}
+</div>
 
 
 {%endblock%}

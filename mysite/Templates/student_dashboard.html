@@ -28,7 +28,7 @@
             <table>
               <tr><td><a href="{% url 'student_profile' %}">Dashboard</a></td></tr> 
               <tr><td><a href="{% url 'register_course' %}">Register Units</a></td></tr>
-              <tr><td><a href="{% url 'selected_units' %}">Selected Units</a></td></tr>
+              {% comment %} <tr><td><a href="{% url 'selected_units' %}">Selected Units</a></td></tr> {% endcomment %}
               <tr><td><a href="{% url 'registered_units' %}">Registered Units</a></td></tr>
               <tr><td><a href="{% url 'attendance' %}">Attendance</a></td></tr>
             </table>

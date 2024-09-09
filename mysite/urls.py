@@ -45,7 +45,7 @@ urlpatterns = [
     path('assigned_units/', views.assigned_units, name='assigned_units'),
     path('assigned_units/attendance_records/<int:unit_id>/',
          views.attendance_records, name='attendance_records'),
-    path('attendance_analysis/', views.choose_year, name='view_units'),
+    path('attendance_analysis/', views.choose_academic_year, name='view_units'),
     path('attendance_analysis/<int:unit_id>/',
          views.attendance_analysis, name='A_analysis'),
 ]

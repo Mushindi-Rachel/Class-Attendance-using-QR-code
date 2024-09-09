@@ -3,7 +3,7 @@ from .models import Unit, QRCode, Attendance
 from .models import StudentProfile
 from .models import LecturerProfile
 from .models import User, CustomAdmin
-from .models import Department, CartItem, UserUnit, Program
+from .models import Department, CartItem, UserUnit, Program, Semester
 
 
 # Registering models.
@@ -18,3 +18,4 @@ admin.site.register(UserUnit)
 admin.site.register(Program)
 admin.site.register(QRCode)
 admin.site.register(Attendance)
+admin.site.register(Semester)

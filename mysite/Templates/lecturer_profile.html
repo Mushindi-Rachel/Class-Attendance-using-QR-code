@@ -1,7 +1,7 @@
 {% extends "lecturer_dashboard.html" %}
 
 {% block content %}
-
+<div id="tables">
 <h2>Personal Information:</h2>
 {% if lecturer_profile %}
 <table class="profile">
@@ -27,4 +27,5 @@
     <p>No profile found for the logged-in user.</p>
     <a href="{% url 'lecturer_update' %}"><button type="submit">Add Information</button></a>
     {% endif %} 
+</div>
 {%endblock%}

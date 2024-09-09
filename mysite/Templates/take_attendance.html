@@ -4,12 +4,32 @@
 <div class="container"> 
     <h2>Generate QR Code</h2>
     <div class="update">
-    <form method="post" action="{%url 'generate_qr_code'%}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Generate QR Code</button>
-    </form>
-</div>
+        <form id="qrForm" method="post" action="{% url 'generate_qr_code' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+            <button type="button" onclick="submitFormWithLocation()">Generate QR Code</button>
+        </form>
+    </div>
 </div>
 
-{%endblock%}
+<script>
+    function submitFormWithLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                // Set latitude and longitude in hidden inputs
+                document.getElementById('latitude').value = position.coords.latitude;
+                document.getElementById('longitude').value = position.coords.longitude;
+
+                // Submit the form
+                document.getElementById('qrForm').submit();
+            }, function (error) {
+                alert("Error getting location: " + error.message);
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+</script>
+{% endblock %}

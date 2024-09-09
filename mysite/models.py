@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -58,8 +59,8 @@ class StudentProfile(models.Model):
     email = models.EmailField(unique=True)
     contact = models.IntegerField()
     date_of_birth = models.DateField()
-    GENDER_CHOICES = [('M', 'Male'), ('F', 'Female')]
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female')]
+    gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
     program = models.CharField(max_length=100)
 
     def get_absolute_url(self):
@@ -97,9 +98,16 @@ class Unit(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=10, default='INTE000')
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
-    year = models.FloatField(max_length=20, choices=YEAR_CHOICES, default=0.0)
+    academic_year = models.FloatField(max_length=20, choices=YEAR_CHOICES, default=0.0)
     total_classes = models.IntegerField(default=13)
     lecturer = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class Semester(models.Model):
+    name = models.CharField(max_length=15, unique=True)
 
     def __str__(self):
         return self.name
@@ -109,7 +117,15 @@ class UserUnit(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     registered_on = models.DateTimeField(auto_now_add=True)
+    semester = models.ForeignKey(Semester, on_delete=models.SET_NULL, null=True, blank=True)
     classes_attended = models.IntegerField(default=0)
+    semester = models.ForeignKey(Semester, on_delete=models.SET_NULL, null=True, blank=True)  # New field
+    
+    def save(self, *args, **kwargs):
+        # Automatically assigns semester based on current date if not set
+        if not self.semester:
+            self.semester = get_semester_from_date(self.registered_on)
+            super().save(*args, **kwargs)
 
     def attendance_percentage(self):
         if self.unit.total_classes == 0:
@@ -132,7 +148,7 @@ class CartItem(models.Model):
 
 class QRCode(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
-    lecture_date = models.DateField()
+    lecture_date = models.DateTimeField(default=timezone.now)
     qr_code_image = models.ImageField(upload_to='qr_codes/', null=True, blank=True)
 
     def __str__(self):

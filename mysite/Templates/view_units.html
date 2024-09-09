@@ -5,11 +5,11 @@
     <h2>Choose Academic Year</h2>
     <form method="post">
         {% csrf_token %}
-        <label for="year">Choose Year:</label>
-        <select name="year" id="year">
-            <option selected disabled>--Select Year--</option>
-            {% for year in years %}
-                <option value="{{ year }}">{{ year }}</option>
+        <label for="academic_year">Choose Year:</label>
+        <select name="academic_year" id="year">
+            <option value="" {% if not selected_academic_year %}selected{% endif %} disabled>--Select Year--</option>
+            {% for academic_year in academic_years %}
+                <option value="{{ academic_year }}"  {% if academic_year == selected_academic_year %}selected="selected"{% endif %}>{{ academic_year }}</option>
             {% endfor %}
         </select>
         <button type="submit">Submit</button>
