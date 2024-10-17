@@ -1,25 +1,18 @@
 {% extends "student_dashboard.html" %}
 
 {% block content %}
-<div class="container">
     <h2>Choose Academic Year</h2>
     <form method="post">
         {% csrf_token %}
-        <label for="academic_year">Choose Year:</label>
+        <label for="academic_year">Choose Academic Year:</label>
         <select name="academic_year" id="year">
-            <option selected disabled>--Select Year--</option>
+            <option value="" {% if not selected_academic_year %}selected{% endif %} disabled>--Select Academic Year--</option>
             {% for academic_year in academic_years %}
-                <option value="{{ academic_year }}">{{ academic_year }}</option>
+                <option value="{{ academic_year }}"  {% if academic_year == selected_academic_year %}selected="selected"{% endif %}>{{ academic_year }}</option>
             {% endfor %}
         </select>
-        <button type="submit">Submit</button>
+        <button type="submit" id="year_btn">Submit</button>
     </form>
-
-    {% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-  {% endfor %}
-{% endif %}
 
     {% if units %}
         <h2>Units for Selected Year</h2>
@@ -46,15 +39,9 @@
     {% endif %}
 
 
-        </div>
-
         <div class="container">
             <h2>Selected Units</h2>
-            {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
+            
         {% if cart_items %}
         <table class="tables">
             <tr>
@@ -77,32 +64,171 @@
         </table>
         <form method="post" action="{% url 'register_units' %}">
             {% csrf_token %}
-            <button type="submit" class="button">Register Units</button>
+            <button type="submit" class="button" id="register_units_button">Register Units</button>
         </form>
     {% else %}
         <p>No units selected.</p>
     {% endif %}
 </div>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    document.getElementById('register_units_button').addEventListener('click', function() {
+        event.preventDefault();
+        let formData = new FormData();
+
+        fetch('{% url "register_units" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: data.message,
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: data.message,
+                    confirmButtonText: 'Try Again'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'An error occurred while processing your request.',
+                confirmButtonText: 'OK'
+            });
+        });
+    });
+
+
+    // Handle add to cart form submission via AJAX
+    document.querySelectorAll('.add-to-cart-form').forEach(form => {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            let formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: data.message,
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Optionally refresh cart display here
+                        refreshCartDisplay();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: data.message,
+                        confirmButtonText: 'Try Again'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'An error occurred while processing your request.',
+                    confirmButtonText: 'OK'
+                });
+            });
+        });
+    });
+
+    // Handle remove from cart form submission via AJAX
+    document.querySelectorAll('.remove-from-cart-form').forEach(form => {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            let formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: data.message,
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Optionally refresh cart display here
+                        refreshCartDisplay();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: data.message,
+                        confirmButtonText: 'Try Again'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'An error occurred while processing your request.',
+                    confirmButtonText: 'OK'
+                });
+            });
+        });
+    });
+
+    // Function to refresh the cart display
+    function refreshCartDisplay() {
+        fetch('{% url "selected_units" %}')
+            .then(response => response.json())
+            .then(data => {
+                let cartContainer = document.getElementById('cart-items');
+                cartContainer.innerHTML = ''; // Clear existing cart items
+                data.cartItems.forEach(item => {
+                    let itemElement = document.createElement('div');
+                    itemElement.textContent = item.name;
+                    cartContainer.appendChild(itemElement);
+                });
+            })
+            .catch(error => console.error('Error fetching cart items:', error));
+    };
+</script>
+
 
 
 {%endblock%}
 
-{% comment %} <!DOCTYPE html>
 
-    <h2>Register Units</h2>
-    
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register Unit</button>
-    </form>
-
-    <h2>Units in Progress:</h2>
-    <ul>
-        {% for unit in  UserUnit%}
-            <li>{{ unit.name }} - {{ unit.code }}</li>
-        {% endfor %}
-    </ul>
-
-{%endblock%}
- {% endcomment %}

@@ -6,43 +6,45 @@
     <title>{% block title %}E-school{% endblock %}</title>
 
     {% load static %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <!-- Common header -->
-    <header>
+    
         <div class="header">
-            <img src="{% static 'images/logoE.png' %}" alt="Logo">
-        </div>
+           
         <div class="user">
             <center><p>You are logged in as: {{ admin_profile.name }}</p></canter>
             </div>
         <div class="logout_btn">
             <a href="{% url 'logout' %}"><button>Logout<img src="{% static 'images/btn-login-hover.png' %}"></button></a>
         </div>
+    </div>
     
         <nav class="sidenav">
             <div id="sidenav_bar">
+                <img src="{% static 'images\Blue Modern Letter C Tech Logo Design (1).png' %}" alt="Logo">
             <table>
               <tr><td><a href="{% url 'admin_profile' %}">Dashboard</a></td></tr> 
               <tr><td><a href="{% url 'add_user' %}">Add New User</a></td></tr>
               <tr><td><a href="{% url 'view_units' %}">Attendance Analysis</a></td></tr>
             </table>
-            <div>
+            <footer>
+                <div class="footer">
+                <p>&copy; 2024 Chaya-Technologies</p>
+            </div>
+            </footer>
         </nav>
-    </header>
 
-    <!-- Main content area -->
+    
     <main>
+        <div class="container">
         {% block content %}
         {% endblock %}
+        </div>
     </main>
 
-    <!-- Common footer -->
-     <footer>
-        <div class="footer">
-        <p>&copy; 2024 E-school</p>
-    </div>
-    </footer>
 </body>
 </html> 

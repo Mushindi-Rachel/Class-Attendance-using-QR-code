@@ -4,11 +4,11 @@
 
 <div class="container">
     <h2>Selected Units</h2>
-    {% if messages %}
+    {% comment %} {% if messages %}
   {% for message in messages %}
     <div class="alert alert-{{ message.tags }}">{{ message }}</div>
   {% endfor %}
-{% endif %}
+{% endif %} {% endcomment %}
     {% if cart_items %}
         <table class="tables">
             <tr>

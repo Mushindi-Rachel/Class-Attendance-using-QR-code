@@ -1,44 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}E-school{% endblock %}</title>
-
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <!-- Common header -->
-    <header>
-        <div class="header">
-            <img src="{% static 'images/logoE.png' %}" alt="Logo">
-        </div>
-        <div class="user">
-        <center><p>You are logged in as: {{ student_profile.name }}</p></canter>
-        </div>
-
-        <div class="logout_btn">
-            <a href="{% url 'logout' %}"><button>Logout<img src="{% static 'images/btn-login-hover.png' %}"></button></a>
-        </div>
-        
-        <!-- Add navigation menu -->
-        <nav class="sidenav">
-            <div id="sidenav_bar">
-            <table>
-              <tr><td><a href="{% url 'student_profile' %}">Dashboard</a></td></tr> 
-              <tr><td><a href="{% url 'register_course' %}">Register Units</a></td></tr>
-              <tr><td><a href="{% url 'selected_units' %}">Selected Units</a></td></tr>
-              <tr><td><a href="{% url 'registered_units' %}">Registered Units</a></td></tr>
-              <tr><td><a href="{% url 'attendance' %}">Attendance</a></td></tr>
-              {% comment %} <tr><td><a href="{% url '' %}">Attendance feedback</a></td></tr> {% endcomment %}
-            </table>
-            <div>
-        </nav>
-    </header>
-
-    <!-- Main content area -->
-    <main>
+{% extends "student_dashboard.html" %}
         {% block content %}
         <div class="container">
             <h2>Edit Personal imformation</h2>
@@ -51,6 +11,5 @@
             </div>
             </div>
         {% endblock %}
-    </main>
 
     

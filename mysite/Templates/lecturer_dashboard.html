@@ -9,11 +9,8 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <!-- Common header -->
-    <header>
         <div class="header">
-            <img src="{% static 'images/logoE.png' %}" alt="Logo">
-        </div>
+            
         <div class="user">
             <center><p>You are logged in as: {{ lecturer_profile.name }}</p></canter>
             </div>
@@ -21,28 +18,33 @@
         <div class="logout_btn">
             <a href="{% url 'logout' %}"><button>Logout<img src="{% static 'images/btn-login-hover.png' %}"></button></a>
         </div>
-        
-        <!-- Add navigation menu -->
+    </div>
+    
+         <div>
         <nav class="sidenav">
+            <img src="{% static 'images\Blue Modern Letter C Tech Logo Design (1).png' %}" alt="Logo">
+        
             <table>
               <tr><td><a href="{% url 'lecturer_profile' %}">Dashboard</a></td></tr> 
               <tr><td><a href="{% url 'assigned_units' %}">Assigned Units</a></td></tr>
-              <tr><td><a href="{% url 'take_attendance' %}">Take Attendance</a></td></tr>
+              <tr><td><a href="{% url 'take_attendance' %}">Generate QR Code</a></td></tr>
             </table>
-        </nav>
-    </header>
+        <footer>
+            <div class="footer">
+            <p>&copy; 2024 Chaya-Technologies</p>
+        </div>
+        </footer>
+    </nav>
+    </div>
 
     <!-- Main content area -->
     <main>
+        <div class="container">
         {% block content %}
         {% endblock %}
+        </div>
     </main>
 
-    <!-- Common footer -->
-    <footer>
-        <div class="footer">
-        <p>&copy; 2024 E-school</p>
-    </div>
-    </footer>
+</div>
 </body>
 </html>

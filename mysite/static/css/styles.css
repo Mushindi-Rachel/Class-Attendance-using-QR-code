@@ -1,80 +1,102 @@
 @import url('https://fonts.googleapis.com/css?family=Trirong&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Quicksand&display=swap');
 body {
-    background-image: url('../images/bg1.avif');
-    background-color: aliceblue;
+    /* background-image: url('../images/bg1.avif'); */
+    background-color: black;
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: 35% 1fr;
+    gap: 10px;
+    grid-template-rows: auto 1fr;
 }
 
 .header {
-    width: 100%;
-    background-color: white;
+    grid-column: 2;
+    grid-row: 1;
+    width: 80%;
+    float: right;
+    border: 1px solid aliceblue;
+    border-radius: 2vh;
+    margin-top: 2vh;
     height: 12vh;
-    padding: 0;
-    margin: 0;
     overflow: hidden;
-    margin-bottom: 0;
-}
-
-.header img {
-    width: 100px;
-    padding: 12px;
+    background-color: aliceblue;
 }
 
 .user p {
-    margin-top: -3vh;
     font-weight: bold;
-}
-
-.logout_btn {
-    margin: 20px 30px 0 20px;
 }
 
 .logout_btn button {
     float: right;
-    margin-top: -50px;
     font-weight: bold;
     background-color: rgb(33, 202, 174);
-    border: 0;
-    border-radius: 5px 5px 5px 5px;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
 }
 
 .sidenav {
-    width: 210px;
-    height: 80vh;
-    float: left;
-    background-color: #2A2D33;
-    /* overflow-y: auto; */
-    position: relative;
-    bottom: 0;
-    margin-top: 0;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 30vh;
+    height: 100vh;
+    background-color: black;
+    position: fixed;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
 }
 
-#sidenav_bar {
-    width: 100%;
-    height: auto;
-    padding: 0;
-    background: #2A2D33;
-    border-right: 1px solid #E0E0E0;
-    background-attachment: scroll;
+.sidenav img {
+    width: 23vh;
+    margin-bottom: 20px;
 }
 
 .sidenav td {
-    margin: auto;
     text-align: center;
-    border-spacing: 20px;
     padding: 20px;
 }
 
 .sidenav a {
     text-decoration: none;
-    font-size: 25px;
+    font-size: 20px;
     color: aliceblue;
+    display: block;
+    padding: 10px 0;
+}
+
+.sidenav td a:hover,
+a:active {
+    background-color: aliceblue;
+    color: black;
+    width: 30vh;
+    border-radius: 20px;
+}
+
+.container {
+    grid-column: 2;
+    grid-row: 2;
+    float: right;
+    background-color: aliceblue;
+    margin: 1vh;
+    padding: 20px;
+    width: 77%;
+    border-radius: 2vh;
+    overflow-y: scroll;
+    max-height: 80vh;
 }
 
 footer {
-    background-color: rgb(47, 70, 66);
+    display: inline-block;
+    background-color: black;
+    border: 1px solid rgb(137, 182, 219);
     color: aliceblue;
     text-align: center;
+    align-items: baseline;
     width: 100%;
     padding: 10px;
     position: relative;
@@ -82,18 +104,27 @@ footer {
     overflow-y: auto;
 }
 
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .login_form {
-    background-color: rgb(186, 228, 219);
+    background-color: black;
+    color: aliceblue;
     width: 60vh;
+    display: block;
     border-radius: 50px 50px 50px 50px;
     border-right: 2px solid rgb(137, 182, 219);
-    margin-left: 25%;
+    border-left: 2px solid rgb(137, 182, 219);
     height: 60vh;
 }
 
-.login_form input[type=text],
+
+/* .login_form input[type=text],
 select {
-    width: ;
+    color: #2A2D33;
     height: 25px;
     border-radius: 5px;
     border: 1px solid rgb(26, 95, 84);
@@ -101,29 +132,32 @@ select {
 
 .login_form input[type=password],
 select {
-    width: ;
+    color: #2A2D33;
     height: 25px;
     border-radius: 5px;
     border: 1px solid rgb(26, 95, 84);
-}
+} */
 
 .login_form img {
-    margin: 5vh 2vh 5vh 15vh;
+    width: 40vh;
+    height: 25vh;
+    margin: 0vh 8vh;
     border-radius: 20px 20px 20px 20px;
 }
 
 #login_form {
+    color: aliceblue;
     font-size: 20px;
     margin-left: 10vh;
 }
 
-.login_form button {
-    background-color: rgb(26, 95, 84);
+#login_form button {
+    background-color: rgb(5, 13, 22);
     color: white;
     padding: 5px;
     border: 0;
     font-size: 20px;
-    border-radius: 5px 5px 5px 5px;
+    border-radius: 7px 7px 7px 7px;
     border: 2px solid rgb(137, 182, 219);
     margin: 30px 0 20px 7vh;
     width: 28vh;
@@ -156,28 +190,41 @@ select {
 
 .profile td {
     padding: 5px;
-    font-size: 16px;
+    font-size: 19px;
 }
 
 .button {
-    margin-left: 5%;
     background-color: rgb(33, 202, 174);
-    border-radius: 5px;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
-.container {
-    margin-left: 40vh;
-    background-color: rgb(207, 241, 236);
-    padding: 20px;
-    width: 40%;
-    border-radius: 10px;
-    margin-bottom: 1vh;
-    overflow-y: scroll;
+.button:hover {
+    background-color: rgb(33, 82, 74);
+    color: white;
 }
 
 .container #year {
+    width: 50%;
     color: black;
     font-size: 15px
+}
+
+#year_btn {
+    background-color: rgb(33, 202, 174);
+    padding: 14px;
+    font-size: 15px;
+    border: none;
+    border-radius: 4px;
+}
+
+#year_btn:hover {
+    background-color: rgb(33, 82, 74);
+    color: white;
 }
 
 .update {
@@ -190,6 +237,7 @@ select {
 
 .update input[type=text],
 select {
+    color: #2A2D33;
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -200,7 +248,7 @@ select {
 }
 
 .update button {
-    width: 100%;
+    width: 40%;
     background-color: rgb(33, 202, 174);
     padding: 14px 20px;
     margin: 8px 0;
@@ -215,7 +263,8 @@ select {
 }
 
 #tables {
-    margin-left: 23%;
+    margin-left: 10%;
+    width: 70%;
 }
 
 .tables td {
@@ -224,7 +273,7 @@ select {
 }
 
 .tables th {
-    border: 1px solid #ddd;
+    border: 1px solid black;
     padding: 10px;
     padding-top: 12px;
     padding-bottom: 12px;
@@ -233,8 +282,8 @@ select {
     color: white;
 }
 
-.tables tr:nth-child(even) {
-    background-color: #f2f2f2;
+.tables tr:nth-child(odd) {
+    background-color: rgb(200, 247, 239);
 }
 
 .alert {
@@ -244,6 +293,26 @@ select {
     font-size: 17px;
     padding: 6px;
     opacity: 0.9;
+}
+
+#select_date {
+    margin-left: 23%;
+}
+
+#select_date label {
+    border: 1px solid #ddd;
+    padding: 10px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: rgb(33, 82, 74);
+    color: white;
+    font-size: 17px;
+}
+
+#select_date select {
+    width: 150px;
+    color: black;
 }
 
 
@@ -263,6 +332,7 @@ select {
     border: 1px solid rgb(61, 85, 81);
     border-radius: 4px;
     box-sizing: border-box;
+    color: black;
 }
 
 #reg_form button {
@@ -274,3 +344,9 @@ select {
     border-radius: 4px;
     cursor: pointer;
 }
+
+.form {
+    font-size: 19px;
+}
+
+.form button {}

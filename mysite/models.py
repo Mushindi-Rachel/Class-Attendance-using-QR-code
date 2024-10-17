@@ -117,15 +117,30 @@ class UserUnit(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     registered_on = models.DateTimeField(auto_now_add=True)
-    semester = models.ForeignKey(Semester, on_delete=models.SET_NULL, null=True, blank=True)
+    semester = models.ForeignKey(Semester, on_delete=models.SET_NULL,
+                                 null=True, blank=True)
     classes_attended = models.IntegerField(default=0)
-    semester = models.ForeignKey(Semester, on_delete=models.SET_NULL, null=True, blank=True)  # New field
-    
+
     def save(self, *args, **kwargs):
-        # Automatically assigns semester based on current date if not set
-        if not self.semester:
-            self.semester = get_semester_from_date(self.registered_on)
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
+
+        if not self.semester and self.registered_on:
+            self.semester = self.get_semester_from_date(self.registered_on)
+            self.save(update_fields=['semester'])
+
+    @staticmethod
+    def get_semester_from_date(date):
+        if not date:
+            return None
+
+        month = date.month
+        if month in [1, 2, 3, 4]:
+            return Semester.objects.get_or_create(name='Jan-Apr')[0]
+        elif month in [5, 6, 7, 8]:
+            return Semester.objects.get_or_create(name='May-Aug')[0]
+        elif month in [9, 10, 11, 12]:
+            return Semester.objects.get_or_create(name='Sep-Dec')[0]
+        return None
 
     def attendance_percentage(self):
         if self.unit.total_classes == 0:

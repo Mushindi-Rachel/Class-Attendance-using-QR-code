@@ -10,10 +10,8 @@
 </head>
 <body>
     <!-- Common header -->
-    <header>
+    
         <div class="header">
-            <img src="{% static 'images/logoE.png' %}" alt="Logo">
-        </div>
         <div class="user">
         <center><p>You are logged in as: {{ student_profile.name }}</p></canter>
         </div>
@@ -21,32 +19,35 @@
         <div class="logout_btn">
             <a href="{% url 'logout' %}"><button>Logout<img src="{% static 'images/btn-login-hover.png' %}"></button></a>
         </div>
+    </div>
         
-        <!-- Add navigation menu -->
         <nav class="sidenav">
             <div id="sidenav_bar">
+                <img src="{% static 'images\Blue Modern Letter C Tech Logo Design (1).png' %}" alt="Logo">
+      
             <table>
               <tr><td><a href="{% url 'student_profile' %}">Dashboard</a></td></tr> 
               <tr><td><a href="{% url 'register_course' %}">Register Units</a></td></tr>
-              {% comment %} <tr><td><a href="{% url 'selected_units' %}">Selected Units</a></td></tr> {% endcomment %}
               <tr><td><a href="{% url 'registered_units' %}">Registered Units</a></td></tr>
               <tr><td><a href="{% url 'attendance' %}">Attendance</a></td></tr>
             </table>
+
+            <div>
+                <footer>
+                    <div class="footer">
+                    <p>&copy; 2024 Chaya-Technologies</p>
+                </div>
+                </footer>
+            </div>
             <div>
         </nav>
-    </header>
 
     <!-- Main content area -->
     <main>
+        <div class="container">
         {% block content %}
         {% endblock %}
+        </div>
     </main>
-
-    <!-- Common footer -->
-    <footer>
-        <div class="footer">
-        <p>&copy; 2024 E-school</p>
-    </div>
-    </footer>
 </body>
 </html>

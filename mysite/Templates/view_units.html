@@ -2,24 +2,34 @@
 
 {% block content %}
 <div class="container">
-    <h2>Choose Academic Year</h2>
+    <h2>Fill in the form to view attendance</h2>
+    <div class="form">
     <form method="post">
-        {% csrf_token %}
-        <label for="academic_year">Choose Year:</label>
+        {% csrf_token %}      
+
+        <label for="semester">Choose Semester:</label>
+        <select name="semester" id="year">
+            <option value="" {% if not selected_semester %}selected{% endif %} disabled>--Select Semester--</option>
+            {% for semester in semesters %}
+                <option value="{{ semester }}" {% if semester == selected_semester %}selected{% endif %}>{{ semester }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="academic_year">Choose Academic Year:</label>
         <select name="academic_year" id="year">
-            <option value="" {% if not selected_academic_year %}selected{% endif %} disabled>--Select Year--</option>
+            <option value="" >--Select Academic Year--</option>
             {% for academic_year in academic_years %}
-                <option value="{{ academic_year }}"  {% if academic_year == selected_academic_year %}selected="selected"{% endif %}>{{ academic_year }}</option>
+                <option value="{{ academic_year }}"  {% if academic_year|stringformat:"s" == selected_academic_year|stringformat:"s" %}selected{% endif %}>{{ academic_year }}</option>
             {% endfor %}
         </select>
         <button type="submit">Submit</button>
     </form>
 
-    {% if messages %}
+    {% comment %} {% if messages %}
   {% for message in messages %}
     <div class="alert alert-{{ message.tags }}">{{ message }}</div>
   {% endfor %}
-{% endif %}
+{% endif %} {% endcomment %}
 
 {% if units %}
 <h2>Units with Associated Lecturers</h2>
@@ -39,11 +49,14 @@
     <td><form method="post" action="{%url 'A_analysis' unit_id=unit.id %}">
         {% csrf_token %}
         <input type="hidden" name="unit_id" value="{{ unit.id }}">
-        <button type="submit">View Details</button>
+        <input type="hidden" name="semester" value="{{ selected_semester }}">
+        <input type="hidden" name="academic_year" value="{{ selected_academic_year }}">
+        <button type="submit">Download</button>
     </form></td> 
   </tr>
   {% endfor %}
 </table>
+</div>
 {% else %}
         <p>No units found for the selected year.</p>
     {% endif %}

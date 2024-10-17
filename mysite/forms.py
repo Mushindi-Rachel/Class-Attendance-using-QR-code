@@ -2,7 +2,7 @@ from django import forms
 # from django.utils import timezone 
 from django.contrib.auth.forms import UserCreationForm
 from .models import User, CustomAdmin, QRCode, StudentProfile
-from .models import LecturerProfile, Department
+from .models import LecturerProfile, Department, Unit
 
 
 class LoginForm(forms.Form):
@@ -66,7 +66,6 @@ class StudentProfileForm(forms.ModelForm):
 
 
 class QRForm(forms.Form):
-    # lecture_date = forms.DateField(default="timezone.now()")
     unit_code = forms.CharField(label='Unit Code')
     latitude = forms.FloatField(required=False)
     longitude = forms.FloatField(required=False)
@@ -74,3 +73,16 @@ class QRForm(forms.Form):
     class Meta:
         model = QRCode
         fields = ['lecture_date', 'unit_code', 'latitude', 'longitude']
+
+
+# class AnalysisForm(forms.Form):
+#     semester = forms.ChoiceField(choices=Semester.name)
+#     acadamic_year = forms.ChoiceField(choices=Unit.YEAR_CHOICES)
+
+#     class Meta:
+#         model = Attendance
+#         fields = ['semester', 'acadamic_year']
+#         widgets = {
+#             'semester': forms.Select(attrs={'class': 'form-control', 'style': 'color: black:'}),
+#             'academic_year': forms.Select(attrs={'class': 'form-control', 'style': 'color: black:'}),
+#         }

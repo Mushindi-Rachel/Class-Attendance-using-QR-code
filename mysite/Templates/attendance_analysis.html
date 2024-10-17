@@ -2,6 +2,7 @@
 {% block content %}
 <div id="tables" style="padding: 2px;">
 <h2>Attendance Records - {{ unit_attendance.0.unit.name }}</h2>
+<a href="{% url 'download_attendance_analysis' unit_id=unit_attendance.0.unit.id %}" class="btn btn-primary">Download as Excel</a>
 <table class="tables" style="padding: 20px;">
     <tr>
         <th>Registration No</th>
@@ -14,6 +15,7 @@
     <td>{{ attendance.user.studentprofile.reg_no }}</td>
     <td>{{ attendance.user.studentprofile.name }}</td>
     <td>{{ attendance.attendance_percentage }}%</td>
+    <td></td>
   </tr>
   {% endfor %}
 </table>

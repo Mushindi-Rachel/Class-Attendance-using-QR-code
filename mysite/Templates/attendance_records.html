@@ -1,19 +1,34 @@
 {% extends "lecturer_dashboard.html" %}
 
 {% block content %}
-<div id="tables">
 <h2>Attendance Records - {{ unit.name }}</h2>
+<form method="post">
+  <div id="select_date">
+  <label>Date</label>
+<select>
+  {% for lecture_date in lecture_dates %}
+  <option value="lecture_date">{{ lecture_date }}</option>
+{% endfor%}
+</select>
+</div>
+</form>
+<div id="tables">
 <table class="tables">
     <tr>
-        <th>Date</th>
-        <th>Student</th>
+        <th>Reg No</th>
+        <th>Name</th>
     </tr>
+    
     
   {% for attendance in unit_attendance %}
   <tr>
-    <td>{{ attendance.lecture_date }}</td> 
     <td>{{ attendance.user.username }}</td> 
+    <td>{{ attendance.user.studentprofile.name }}</td>
   </tr>
   {% endfor %}
 </table>
+
+<div>
+  <a href="{% url 'download_attendance_records' unit.id %}?date={{select_date}}"><button>Download</button></a>
+</div>
 {% endblock %}

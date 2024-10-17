@@ -1,17 +1,14 @@
 {% extends "student_dashboard.html" %}
 
 {% block content %}
-
-<div class="container">
     <h2>Scan QR Code</h2>
-    {% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-    {% endif %}
+  
     <video id="video" style="width:50%"></video>
     <canvas id="canvas" style="width:50%" willReadFrequently="true"></canvas>
 
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
     <script>
         let scanner = new Instascan.Scanner({ video: document.getElementById('video') });
@@ -30,21 +27,48 @@
                             'X-CSRFToken': '{{ csrf_token }}'
                         }
                     })
-                    .then(response => {
-                        if (response.ok) {
-                            alert('Attendance recorded successfully');
+                    .then(response => response.json())  // Converting the response to JSON
+                    .then(data => {
+                        if (data.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: data.message,
+                                confirmButtonText: 'OK'
+                            });
                         } else {
-                            console.error('Failed to record attendance');
-                        }
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: data.message,
+                                confirmButtonText: 'Try Again'
+                        });
+                    }
                     })
                     .catch(error => {
                         console.error('Error recording attendance:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while recording attendance.',
+                            confirmButtonText: 'OK'
+                        });
                     });
                 }, function (error) {
-                    alert("Error getting your location. Please enable location services.");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Location Error',
+                        text: 'Error getting your location. Please enable location services.',
+                        confirmButtonText: 'OK'
+                    });
                 });
             } else {
-                alert("Geolocation is not supported by this browser.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Unsupported Feature',
+                    text: 'Geolocation is not supported by this browser.',
+                    confirmButtonText: 'OK'
+                });
             }
         });
         Instascan.Camera.getCameras()
@@ -53,10 +77,22 @@
                     scanner.start(cameras[0]);
                 } else {
                     console.error('No cameras found');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Camera Error',
+                        text: 'No cameras found on your device.',
+                        confirmButtonText: 'OK'
+                    });
                 }
             })
             .catch(function (error) {
                 console.error('Error accessing camera:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Camera Access Error',
+                    text: 'Error accessing camera. Please check your device settings.',
+                    confirmButtonText: 'OK'
+                });
             });
     </script>
     <form id="attendance_form" action="{% url 'record_attendance' %}" method="POST" style="display: none;">
@@ -65,6 +101,5 @@
         <input type="hidden" id="latitude" name="latitude">
         <input type="hidden" id="longitude" name="longitude">
     </form>
-</div>
 
 {% endblock %}
